@@ -1,0 +1,6 @@
+{
+  "name": "@drupal-jsx/vite-plugin-drupal",
+  "peerDependencies": {
+    "vite": "^4 || ^5"
+  }
+}

@@ -1,6 +1,9 @@
 {
   "name": "@drupal-jsx/vite-plugin-drupal",
   "type": "module",
+  "dependencies": {
+    "just-kebab-case": "^4"
+  },
   "peerDependencies": {
     "vite": "^5"
   }

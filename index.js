@@ -25,13 +25,20 @@ export default function drupal({ drupalTemplatesDir, drushPath }) {
         const newContents = JSON.stringify({ props: propTypes[tagName] });
 
         if (newContents != oldContents) {
+          // Don't need to await this, because when it's done, handleHotUpdate()
+          // will get called for drupalTemplateFileName.
           Bun.write(drupalTemplateFileName, newContents);
         }
       }
 
-      // When a *.template-info.json file changes, the Drupal page must be
-      // reloaded.
+      // When a *.template-info.json file changes, clear the Drupal caches that
+      // depend on it and reload the page.
       if (file.endsWith('.template-info.json')) {
+        const cacheTypes = ['theme-registry', 'render'];
+        const promises = cacheTypes.map(
+          (type) => Bun.spawn([drushPath, 'cache:clear', type]).exited
+        );
+        await Promise.all(promises);
         server.ws.send({
           type: "full-reload",
         });

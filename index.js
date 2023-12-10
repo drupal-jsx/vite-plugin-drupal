@@ -1,5 +1,5 @@
 import serializePropTypes from '@drupal-jsx/serialize-prop-types';
-import kebabCase from 'just-kebab-case';
+import { kebabCasePreserveDoubleDash } from '@drupal-jsx/drupal-utils';
 
 const reDrupalComponent = new RegExp('/components/(Drupal[\\w\\-]+)\\.jsx$');
 
@@ -12,7 +12,7 @@ export default function drupal({ drupalTemplatesDir, drushPath }) {
       // new *.template-info.json file.
       const found = file.match(reDrupalComponent);
       if (found) {
-        const tagName = kebabCase(found[1]);
+        const tagName = kebabCasePreserveDoubleDash(found[1]);
 
         const drupalTemplateName = tagName.substring(7);
         const drupalTemplateFileName = `${drupalTemplatesDir}/${drupalTemplateName}.template-info.json`;

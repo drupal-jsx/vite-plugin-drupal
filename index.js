@@ -1,11 +1,20 @@
 import serializePropTypes from '@drupal-jsx/serialize-prop-types';
 import { kebabCasePreserveDoubleDash } from '@drupal-jsx/drupal-utils';
+import { componentFileNameFromTwigTemplateName } from '@drupal-jsx/drupal-utils-dev';
 
 const reDrupalComponent = new RegExp('/components/(Drupal[\\w\\-]+)\\.jsx$');
 
 export default function drupal({ drupalTemplatesDir, drushPath }) {
   return {
     name: 'vite:drupal',
+
+    configureServer(server) {
+      server.ws.on('drupal-jsx:override-twig-template', (data, client) => {
+        const componentName = componentFileNameFromTwigTemplateName(data.template);
+        const file = Bun.file('src/components/_DrupalComponentTemplate.jsx');
+        Bun.write('src/components/' + componentName, file);
+      })
+    },
 
     async handleHotUpdate({ file, server }) {
       // When the propTypes of a Drupal*.jsx component changes, re-export the
@@ -17,7 +26,7 @@ export default function drupal({ drupalTemplatesDir, drushPath }) {
         const drupalTemplateName = tagName.substring(7);
         const drupalTemplateFileName = `${drupalTemplatesDir}/${drupalTemplateName}.template-info.json`;
         const f = Bun.file(drupalTemplateFileName);
-        const oldContents = await f.text();
+        const oldContents = await f.exists() ? await f.text() : '';
 
         const modulePaths = {};
         modulePaths[tagName] = file;

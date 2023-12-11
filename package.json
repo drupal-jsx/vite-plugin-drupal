@@ -2,7 +2,8 @@
   "name": "@drupal-jsx/vite-plugin-drupal",
   "type": "module",
   "dependencies": {
-    "@drupal-jsx/drupal-utils": "github:drupal-jsx/drupal-utils"
+    "@drupal-jsx/drupal-utils": "github:drupal-jsx/drupal-utils",
+    "@drupal-jsx/drupal-utils-dev": "github:drupal-jsx/drupal-utils-dev"
   },
   "peerDependencies": {
     "vite": "^5"
